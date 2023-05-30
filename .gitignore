@@ -1,0 +1,7 @@
+# folder that contains trained model for sentiment analysis and word2vec model
+trained_models
+
+app/__pycache__
+
+env
+.idea
