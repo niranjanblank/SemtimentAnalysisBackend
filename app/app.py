@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import nltk
 from gensim.models import Word2Vec
 from tensorflow.keras.models import load_model
+from helper_functions import get_pre_processed_input
 
 app = FastAPI()
 
@@ -12,6 +13,8 @@ word2vec_model = None
 # Define the event handler for server startup
 @app.on_event("startup")
 async def startup_event():
+    global sentiment_classifier
+    global word2vec_model
     # Check if the required NLTK files are already downloaded
     if not nltk.data.find("tokenizers/punkt"):
         # Download the required NLTK files
@@ -19,7 +22,7 @@ async def startup_event():
         nltk.download('punkt')
         nltk.download('wordnet')
 
-    #loading the ml model
+    #loading the deep learning model and gensim word2vec model
     sentiment_classifier = load_model("trained_models/sentiment_model.h5")
     word2vec_model = Word2Vec.load("trained_models/word2vec.model")
 
@@ -34,10 +37,25 @@ async def root() -> dict:
 
 @app.post("/sentiment",tags=['sentiment'])
 async def predict_sentiment(text: dict) -> dict:
+    """
+    Route for sentiment analysis of text
+    """
     tweet = text['data']
-
+    #pre process the text to get in format recognizable by the deep learning model
+    processed_tweet = get_pre_processed_input(tweet, word2vec_model)
+    #predicting
+    prediction = sentiment_classifier.predict(processed_tweet)
+    prediction_score = float(prediction[0,0])
+    #calculating the prediction label
+    if prediction_score>0.5:
+        predicted_label = 1
+        confidence = prediction_score
+    else:
+        predicted_label = 0
+        confidence = 1 - prediction_score
     return {
         "data": tweet,
-        "prediction_score": "0.99",
-        "predicted_label": "1"
+        "prediction_score": prediction_score,
+        "predicted_label": predicted_label,
+        "confidence": confidence
     }

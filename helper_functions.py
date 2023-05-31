@@ -7,6 +7,9 @@ from nltk.stem import PorterStemmer
 import numpy as np
 
 def pre_process_tweet(tweet):
+    """
+    Cleaning the text
+    """
     #converting to lowercase
     tweet = tweet.lower()
 
@@ -37,6 +40,9 @@ def pre_process_tweet(tweet):
     return cleaned_tweet_tokens
 
 def word_to_vec(sentence, word2vec_model):
+    """
+    Convert a sentence to word embeddings
+    """
     return [word2vec_model.wv[word] if word in word2vec_model.wv else np.zeros(word2vec_model.vector_size) for word in sentence]
 
 def get_pre_processed_input(tweet,word2vec_model,maxlen=37,embedding_dim=100):
