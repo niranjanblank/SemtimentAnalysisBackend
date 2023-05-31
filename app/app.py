@@ -2,7 +2,7 @@ from fastapi import FastAPI
 import nltk
 from gensim.models import Word2Vec
 from tensorflow.keras.models import load_model
-from helper_functions import get_pre_processed_input
+
 app = FastAPI()
 
 #defining variables to load word2vec model and deep learning model
@@ -30,4 +30,14 @@ async def root() -> dict:
     """ Base Route for the project """
     return {
         "data": "Welcome to Sentiment Analysis"
+    }
+
+@app.post("/sentiment",tags=['sentiment'])
+async def predict_sentiment(text: dict) -> dict:
+    tweet = text['data']
+
+    return {
+        "data": tweet,
+        "prediction_score": "0.99",
+        "predicted_label": "1"
     }
