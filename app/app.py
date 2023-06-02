@@ -3,8 +3,18 @@ import nltk
 from gensim.models import Word2Vec
 from tensorflow.keras.models import load_model
 from helper_functions import get_pre_processed_input
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+#configuring middleware for cors setting
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # You can replace "*" with the specific origins you want to allow
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 #defining variables to load word2vec model and deep learning model
 sentiment_classifier = None
