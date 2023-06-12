@@ -1,0 +1,20 @@
+# Git directories and files
+.git
+.gitignore
+
+# Python cache files
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+*.log
+*.csv
+*.json
+*.md
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose.yml
