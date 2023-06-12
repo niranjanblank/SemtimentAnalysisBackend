@@ -4,6 +4,8 @@ from gensim.models import Word2Vec
 from tensorflow.keras.models import load_model
 from helper_functions import get_pre_processed_input
 from fastapi.middleware.cors import CORSMiddleware
+import tensorflow as tf
+import os
 
 app = FastAPI()
 
@@ -25,6 +27,9 @@ word2vec_model = None
 async def startup_event():
     global sentiment_classifier
     global word2vec_model
+
+    os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'  # Set the TF_ENABLE_ONEDNN_OPTS environment variable
+    tf.config.threading.set_intra_op_parallelism_threads(1)  # Limit TensorFlow to use only one thread for parallelism
     # Check if the required NLTK files are already downloaded
     if not nltk.data.find("tokenizers/punkt"):
         # Download the required NLTK files
